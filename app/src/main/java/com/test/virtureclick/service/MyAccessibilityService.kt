@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
 
 class MyAccessibilityService : AccessibilityService() {
     private val TAG = "MyAccessibilityService"
-    private val  mListJob : ArrayList<Job> = arrayListOf()
+    private val mListJob: ArrayList<Job> = arrayListOf()
 
     //服务中断时的回调
     override fun onInterrupt() {
@@ -33,9 +33,10 @@ class MyAccessibilityService : AccessibilityService() {
     private fun analyzeEvent(event: AccessibilityEvent, nodeInfo: AccessibilityNodeInfo) {
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                "analyzeEvent , event.text:${event.text}".d(TAG)
-                when(event.text.toString().trimBrackets()){
-                    resources.getString(R.string.heartstone_surrender) -> {
+                val id = event?.source?.viewIdResourceName?.split("/")?.get(1)
+                "analyzeEvent , id:$id".d(TAG)
+                when (id) {
+                    "floatwindow_surrender_tv" -> {
                         cancel()
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.IO) {
@@ -43,10 +44,12 @@ class MyAccessibilityService : AccessibilityService() {
                             }
                         )
                     }
-                    resources.getString(R.string.heartstone_cancel) -> {
+
+                    "floatwindow_cancel_tv" -> {
                         cancel()
                     }
-                    resources.getString(R.string.heartstone_next) -> {
+
+                    "floatwindow_next_tv" -> {
                         cancel()
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.IO) {
@@ -111,14 +114,14 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
 
-    private fun cancel(){
+    private fun cancel() {
         mListJob.forEach {
             it.cancel()
         }
         mListJob.clear()
     }
 
-    private fun click(coordinate:Coordinate) {
+    private fun click(coordinate: Coordinate) {
         val clickPath = Path()
         val builder = GestureDescription.Builder()
         clickPath.moveTo(coordinate.x.toFloat(), coordinate.y.toFloat())
