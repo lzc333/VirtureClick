@@ -78,6 +78,8 @@ class MyAccessibilityService : AccessibilityService() {
         "performNext 点击对战".d(TAG)
         click(Coordinate.heartstone_battle)
 
+        nodeInfo.recycle()
+
     }
 
     private suspend fun performSurrender(nodeInfo: AccessibilityNodeInfo) {
@@ -104,6 +106,8 @@ class MyAccessibilityService : AccessibilityService() {
         delay(5000)
         "performSurrender 点击对战".d(TAG)
         click(Coordinate.heartstone_battle)
+
+        nodeInfo.recycle()
     }
 
 
