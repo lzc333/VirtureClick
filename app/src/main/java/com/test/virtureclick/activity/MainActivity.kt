@@ -17,6 +17,7 @@ import com.test.virtureclick.R
 import com.test.virtureclick.service.FloatWindowServices
 import com.test.virtureclick.service.MyAccessibilityService
 import com.test.virtureclick.tools.d
+import com.test.virtureclick.tools.showToast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         "onCreate".d(TAG)
         start_accessibility_bt.setOnClickListener {
             if(isAccessibilitySettingsOn(this@MainActivity, MyAccessibilityService::class.java)){
-                Toast.makeText(this@MainActivity,"已开启无障碍权限！",Toast.LENGTH_SHORT).show()
+                "已开启无障碍权限！".showToast(this@MainActivity)
             }else{
                 startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             }
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun startService() {
         if (!Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, "当前无权限，请授权", Toast.LENGTH_SHORT).show()
+            "当前无权限，请授权！".showToast(this@MainActivity)
             startActivityForResult(
                 Intent(
                     Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             withContext(Dispatchers.Main) {
                 if (requestCode == 0) {
                     if (!Settings.canDrawOverlays(this@MainActivity)) {
-                        Toast.makeText(this@MainActivity, "授权失败", Toast.LENGTH_SHORT).show()
+                        "授权失败".showToast(this@MainActivity)
                     } else {
                         val intent = Intent(this@MainActivity, FloatWindowServices::class.java)
                         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE)
@@ -124,12 +125,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         "onRestart".d(TAG)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-    }
 
     override fun onDestroy() {
         super.onDestroy()
+        "onDestroy".d(TAG)
         cancel()
     }
 }
