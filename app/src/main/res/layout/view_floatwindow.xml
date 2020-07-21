@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/floatwindow_layout"
+    android:padding="10dp"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/floatwindow_surrender_tv"
+        android:text="@string/Heartstone_surrender"
+        android:background="@drawable/shape_button_bg"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/floatwindow_cancel_tv"
+        android:text="@string/Heartstone_cancel"
+        android:background="@drawable/shape_button_bg"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/floatwindow_shutdown_tv"
+        android:text="关闭"
+        android:background="@drawable/shape_button_bg"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+    <Chronometer
+        android:visibility="visible"
+        android:id="@+id/floatwindow_chronometer"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

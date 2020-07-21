@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/start_accessibility_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启无障碍"
+        android:background="@mipmap/icon_button_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/start_window_bt"
+        ></Button>
+
+    <Button
+        android:id="@+id/start_window_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="开启悬浮窗"
+        android:background="@mipmap/icon_button_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/start_accessibility_bt"
+        app:layout_constraintBottom_toTopOf="@id/close_window_bt"
+        ></Button>
+
+    <Button
+        android:id="@+id/close_window_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="关闭悬浮窗"
+        android:padding="10dp"
+        android:background="@mipmap/icon_button_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/start_window_bt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        ></Button>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
