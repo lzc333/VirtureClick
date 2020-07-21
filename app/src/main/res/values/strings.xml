@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">虚拟点击</string>
     <string name="accessibility_service_description">开启辅助功能，立享黑科技</string>
-    <string name="Heartstone_surrender">投降</string>
-    <string name="Heartstone_cancel">取消</string>
+    <string name="heartstone_surrender">surrender</string>
+    <string name="heartstone_cancel">cancel</string>
+    <string name="heartstone_next">next</string>
 </resources>
