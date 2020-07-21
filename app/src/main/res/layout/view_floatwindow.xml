@@ -9,26 +9,27 @@
 
     <Button
         android:id="@+id/floatwindow_surrender_tv"
-        android:text="@string/Heartstone_surrender"
+        android:text="@string/heartstone_surrender"
         android:background="@drawable/shape_button_bg"
         android:layout_width="wrap_content"
+        android:textAllCaps="false"
+        android:textSize="12sp"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
-
-
     <Button
         android:id="@+id/floatwindow_cancel_tv"
-        android:text="@string/Heartstone_cancel"
+        android:text="@string/heartstone_cancel"
+        android:textAllCaps="false"
         android:background="@drawable/shape_button_bg"
         android:layout_width="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
-
     <Button
-        android:id="@+id/floatwindow_shutdown_tv"
-        android:text="关闭"
+        android:id="@+id/floatwindow_next_tv"
+        android:text="@string/heartstone_next"
         android:background="@drawable/shape_button_bg"
         android:layout_width="wrap_content"
+        android:textAllCaps="false"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
     <Chronometer

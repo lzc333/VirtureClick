@@ -5,16 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.os.Vibrator
 import android.view.*
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.LinearLayout
 import com.test.virtureclick.R
 import com.test.virtureclick.tools.d
+import com.test.virtureclick.tools.showToast
 import kotlin.math.abs
-import kotlin.system.exitProcess
 
-class FloatWindowServices : Service() {
+class FloatWindowServices : Service(), View.OnClickListener {
     private val TAG = "FloatWindowServices"
     private var winManager: WindowManager? = null
     private var wmParams: WindowManager.LayoutParams? = null
@@ -24,6 +25,7 @@ class FloatWindowServices : Service() {
     private var mFloatingLayout: View? = null
     private var linearLayout: LinearLayout? = null
     private var chronometer: Chronometer? = null
+    private lateinit var vibrator: Vibrator
 
 
     override fun onBind(intent: Intent): IBinder? {
@@ -42,27 +44,33 @@ class FloatWindowServices : Service() {
     override fun onCreate() {
         "onCreate".d(TAG)
         super.onCreate()
+        vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
     }
 
     /**
      * 悬浮窗点击事件
      */
     private fun initFloating() {
-        linearLayout = mFloatingLayout?.findViewById<LinearLayout>(R.id.floatwindow_layout)
-        linearLayout?.run {
-            setOnClickListener {
-                "floatwindow_layout click".d(TAG)
-            }
-            //悬浮框触摸事件，设置悬浮框可拖动
-            setOnTouchListener(FloatingListener())
-        }
+        mFloatingLayout?.findViewById<LinearLayout>(R.id.floatwindow_layout)
+            ?.setOnTouchListener(FloatingListener())
 
-        mFloatingLayout!!.findViewById<Button>(R.id.floatwindow_shutdown_tv).setOnClickListener {
-            "floatwindow_shutdown_tv click".d(TAG)
-             exitProcess(0)
-        }
+        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_surrender_tv)
+            ?.setOnClickListener(this)
+        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_cancel_tv)?.setOnClickListener(this)
+        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_next_tv)?.setOnClickListener(this)
     }
 
+
+    override fun onClick(v: View) {
+        "onClick v.id = ${v.id}".d(TAG)
+        vibrator.vibrate(120)
+        when (v.id) {
+            R.id.floatwindow_surrender_tv -> "认输"
+            R.id.floatwindow_cancel_tv -> "取消"
+            R.id.floatwindow_next_tv -> "下一局"
+            else -> null
+        }.showToast(this)
+    }
 
     //开始触控的坐标，移动时的坐标（相对于屏幕左上角的坐标）
     private var mTouchStartX: Int = 0
@@ -149,7 +157,8 @@ class FloatWindowServices : Service() {
             wmParams = WindowManager.LayoutParams()
             wmParams?.run {
                 type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                flags =
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR or
                             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 width = WindowManager.LayoutParams.WRAP_CONTENT
@@ -168,4 +177,5 @@ class FloatWindowServices : Service() {
         "onDestroy".d(TAG)
         winManager!!.removeView(mFloatingLayout)
     }
+
 }
