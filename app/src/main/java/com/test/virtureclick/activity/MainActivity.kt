@@ -20,6 +20,7 @@ import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.showToast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -69,7 +70,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             binder.service
         }
 
-        override fun onServiceDisconnected(name: ComponentName) {}
+        override fun onServiceDisconnected(name: ComponentName) {
+            "onServiceDisconnected".d(TAG)
+            exitProcess(0)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

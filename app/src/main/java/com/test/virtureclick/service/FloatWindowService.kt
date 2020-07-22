@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.os.Vibrator
 import android.view.*
 import android.widget.Button
 import android.widget.Chronometer
@@ -25,7 +24,6 @@ class FloatWindowServices : Service(), View.OnClickListener {
     private var mFloatingLayout: View? = null
     private var linearLayout: LinearLayout? = null
     private var chronometer: Chronometer? = null
-    private lateinit var vibrator: Vibrator
 
 
     override fun onBind(intent: Intent): IBinder? {
@@ -44,7 +42,6 @@ class FloatWindowServices : Service(), View.OnClickListener {
     override fun onCreate() {
         "onCreate".d(TAG)
         super.onCreate()
-        vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
     }
 
     /**
@@ -63,7 +60,6 @@ class FloatWindowServices : Service(), View.OnClickListener {
 
     override fun onClick(v: View) {
         "onClick v.id = ${v.id}".d(TAG)
-        vibrator.vibrate(120)
         when (v.id) {
             R.id.floatwindow_surrender_tv -> "认输"
             R.id.floatwindow_cancel_tv -> "取消"
