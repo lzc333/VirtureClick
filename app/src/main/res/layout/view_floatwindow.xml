@@ -3,40 +3,64 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/floatwindow_layout"
-    android:padding="10dp"
-    android:background="@android:color/white"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/floatwindow_surrender_tv"
         android:text="@string/heartstone_surrender"
-        android:background="@drawable/shape_button_bg"
         android:layout_width="wrap_content"
         android:textAllCaps="false"
         android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/floatwindow_cancel_tv"
         android:text="@string/heartstone_cancel"
         android:textAllCaps="false"
-        android:background="@drawable/shape_button_bg"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
         android:layout_width="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/floatwindow_next_tv"
         android:text="@string/heartstone_next"
-        android:background="@drawable/shape_button_bg"
+        android:background="@android:color/transparent"
         android:layout_width="wrap_content"
         android:textAllCaps="false"
-        android:layout_marginBottom="10dp"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="5dp"
         android:layout_height="wrap_content" />
-    <Chronometer
-        android:visibility="visible"
-        android:id="@+id/floatwindow_chronometer"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content" />
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+        <Chronometer
+            android:id="@+id/floatwindow_chronometer"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:layout_marginStart="8dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_drag"
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
 
 </LinearLayout>

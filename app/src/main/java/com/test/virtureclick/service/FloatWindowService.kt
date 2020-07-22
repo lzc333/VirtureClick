@@ -3,6 +3,7 @@ package com.test.virtureclick.service
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.os.Binder
 import android.os.IBinder
 import android.view.*
@@ -145,9 +146,10 @@ class FloatWindowServices : Service(), View.OnClickListener {
     }
 
 
-    //设置window type 下面变量2002是在屏幕区域显示，2003则可以显示在状态栏之上
+
     //设置可以显示在状态栏上
     //设置悬浮窗口长宽数据
+    //设置悬浮窗透明
     private val params: WindowManager.LayoutParams?
         get() {
             wmParams = WindowManager.LayoutParams()
@@ -159,6 +161,7 @@ class FloatWindowServices : Service(), View.OnClickListener {
                             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 width = WindowManager.LayoutParams.WRAP_CONTENT
                 height = WindowManager.LayoutParams.WRAP_CONTENT
+                format = PixelFormat.TRANSPARENT
             }
             return wmParams
         }
