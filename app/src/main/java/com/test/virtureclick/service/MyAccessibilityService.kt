@@ -9,9 +9,11 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.test.virtureclick.R
 import com.test.virtureclick.bean.Coordinate
+import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.trimBrackets
 import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
 import kotlin.system.exitProcess
 
 
@@ -19,6 +21,7 @@ class MyAccessibilityService : AccessibilityService() {
     private val TAG = "MyAccessibilityService"
     private lateinit var vibrator: Vibrator
     private val mListJob: ArrayList<Job> = arrayListOf()
+    private var nextNumber = 0
 
     //服务中断时的回调
     override fun onInterrupt() {
@@ -43,7 +46,8 @@ class MyAccessibilityService : AccessibilityService() {
                 when (id) {
                     "floatwindow_surrender_tv" -> {
                         cancel()
-                        vibrator.vibrate(120)
+                        nextNumber = 0
+                        EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.IO) {
                                 performSurrender(nodeInfo)
@@ -52,13 +56,13 @@ class MyAccessibilityService : AccessibilityService() {
                     }
 
                     "floatwindow_cancel_tv" -> {
-                        vibrator.vibrate(120)
                         cancel()
                     }
 
                     "floatwindow_next_tv" -> {
-                        vibrator.vibrate(120)
                         cancel()
+                        nextNumber++
+                        EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.IO) {
                                 performNext(nodeInfo)
@@ -66,7 +70,6 @@ class MyAccessibilityService : AccessibilityService() {
                         )
                     }
                 }
-
             }
         }
     }
@@ -76,12 +79,16 @@ class MyAccessibilityService : AccessibilityService() {
         "performNext 点击空白区域".d(TAG)
         click(Coordinate.heartstone_blank)
 
-        delay(1200)
+        delay(1000)
+        "performNext 点击空白区域".d(TAG)
+        click(Coordinate.heartstone_blank)
+
+        delay(1000)
         "performNext 点击空白区域".d(TAG)
         click(Coordinate.heartstone_blank)
 
         //升星或降星需要再点击一次
-        delay(1500)
+        delay(1000)
         "performNext 点击空白区域".d(TAG)
         click(Coordinate.heartstone_blank)
 
@@ -123,6 +130,7 @@ class MyAccessibilityService : AccessibilityService() {
 
 
     private fun cancel() {
+        vibrator.vibrate(120)
         mListJob.forEach {
             it.cancel()
         }

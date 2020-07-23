@@ -10,9 +10,14 @@ import android.view.*
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.test.virtureclick.R
+import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.showToast
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.abs
 
 class FloatWindowServices : Service(), View.OnClickListener {
@@ -23,7 +28,7 @@ class FloatWindowServices : Service(), View.OnClickListener {
 
     //浮动布局
     private var mFloatingLayout: View? = null
-    private var linearLayout: LinearLayout? = null
+    private var mNextBt: Button? = null
     private var chronometer: Chronometer? = null
 
 
@@ -43,6 +48,7 @@ class FloatWindowServices : Service(), View.OnClickListener {
     override fun onCreate() {
         "onCreate".d(TAG)
         super.onCreate()
+        EventBus.getDefault().register(this@FloatWindowServices)
     }
 
     /**
@@ -55,7 +61,8 @@ class FloatWindowServices : Service(), View.OnClickListener {
         mFloatingLayout?.findViewById<Button>(R.id.floatwindow_surrender_tv)
             ?.setOnClickListener(this)
         mFloatingLayout?.findViewById<Button>(R.id.floatwindow_cancel_tv)?.setOnClickListener(this)
-        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_next_tv)?.setOnClickListener(this)
+        mNextBt = mFloatingLayout?.findViewById<Button>(R.id.floatwindow_next_tv)
+        mNextBt?.setOnClickListener(this)
     }
 
 
@@ -145,7 +152,16 @@ class FloatWindowServices : Service(), View.OnClickListener {
         winManager?.addView(mFloatingLayout, wmParams)
     }
 
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun handleEvent(event:NextNumberEvent) {
+        "handleEvent event = $event".d(TAG)
+        val color = when(event.number){
+            0 -> android.R.color.white
+            1 -> android.R.color.holo_green_light
+            else -> android.R.color.holo_red_light
+        }
+        mNextBt?.setTextColor(ContextCompat.getColor(this@FloatWindowServices,color))
+    }
 
     //设置可以显示在状态栏上
     //设置悬浮窗口长宽数据
@@ -175,6 +191,7 @@ class FloatWindowServices : Service(), View.OnClickListener {
         super.onDestroy()
         "onDestroy".d(TAG)
         winManager!!.removeView(mFloatingLayout)
+        EventBus.getDefault().unregister(this@FloatWindowServices)
     }
 
 }
