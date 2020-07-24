@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.test.virtureclick.R
 import com.test.virtureclick.bean.NextNumberEvent
+import com.test.virtureclick.tools.clickWithTrigger
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.showToast
 import org.greenrobot.eventbus.EventBus
@@ -20,7 +21,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.abs
 
-class FloatWindowServices : Service(), View.OnClickListener {
+class FloatWindowServices : Service() {
     private val TAG = "FloatWindowServices"
     private var winManager: WindowManager? = null
     private var wmParams: WindowManager.LayoutParams? = null
@@ -59,22 +60,18 @@ class FloatWindowServices : Service(), View.OnClickListener {
             ?.setOnTouchListener(FloatingListener())
 
         mFloatingLayout?.findViewById<Button>(R.id.floatwindow_surrender_tv)
-            ?.setOnClickListener(this)
-        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_cancel_tv)?.setOnClickListener(this)
+            ?.clickWithTrigger(500) {
+                "认输".showToast(this)
+            }
+        mFloatingLayout?.findViewById<Button>(R.id.floatwindow_cancel_tv)?.clickWithTrigger(500) {
+            "取消".showToast(this)
+        }
         mNextBt = mFloatingLayout?.findViewById<Button>(R.id.floatwindow_next_tv)
-        mNextBt?.setOnClickListener(this)
+        mNextBt?.clickWithTrigger(500) {
+            "下一局".showToast(this)
+        }
     }
 
-
-    override fun onClick(v: View) {
-        "onClick v.id = ${v.id}".d(TAG)
-        when (v.id) {
-            R.id.floatwindow_surrender_tv -> "认输"
-            R.id.floatwindow_cancel_tv -> "取消"
-            R.id.floatwindow_next_tv -> "下一局"
-            else -> null
-        }.showToast(this)
-    }
 
     //开始触控的坐标，移动时的坐标（相对于屏幕左上角的坐标）
     private var mTouchStartX: Int = 0
@@ -153,14 +150,14 @@ class FloatWindowServices : Service(), View.OnClickListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun handleEvent(event:NextNumberEvent) {
+    fun handleEvent(event: NextNumberEvent) {
         "handleEvent event = $event".d(TAG)
-        val color = when(event.number){
+        val color = when (event.number) {
             0 -> android.R.color.white
             1 -> android.R.color.holo_green_light
             else -> android.R.color.holo_red_light
         }
-        mNextBt?.setTextColor(ContextCompat.getColor(this@FloatWindowServices,color))
+        mNextBt?.setTextColor(ContextCompat.getColor(this@FloatWindowServices, color))
     }
 
     //设置可以显示在状态栏上
