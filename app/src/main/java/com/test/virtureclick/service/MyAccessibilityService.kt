@@ -13,6 +13,8 @@ import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.trimBrackets
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import org.greenrobot.eventbus.EventBus
 import kotlin.system.exitProcess
 
@@ -49,8 +51,8 @@ class MyAccessibilityService : AccessibilityService() {
                         nextNumber = 0
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
-                            GlobalScope.launch(Dispatchers.IO) {
-                                performSurrender(nodeInfo)
+                            GlobalScope.launch(Dispatchers.Default) {
+                                performSurrender(this, nodeInfo)
                             }
                         )
                     }
@@ -64,8 +66,8 @@ class MyAccessibilityService : AccessibilityService() {
                         nextNumber++
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
-                            GlobalScope.launch(Dispatchers.IO) {
-                                performNext(nodeInfo)
+                            GlobalScope.launch(Dispatchers.Default) {
+                                performNext(this, nodeInfo)
                             }
                         )
                     }
@@ -74,58 +76,80 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
-    private suspend fun performNext(nodeInfo: AccessibilityNodeInfo) {
-        delay(5000)
-        "performNext 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+    private fun performNext(coroutineScope: CoroutineScope, nodeInfo: AccessibilityNodeInfo) {
+        coroutineScope.launch {
+            "performNext  start".d(TAG)
+            coroutineScope.launch {
+                flow {
+                    for (i in 1..21) {
+                        emit(i)
+                        delay(433)
+                    }
+                }.collect {
+                    click(Coordinate.heartstone_blank)
+                    "performNext 点击空白区域 ,第${it}次".d(TAG)
+                }
+            }
 
-        delay(1000)
-        "performNext 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
 
-        delay(1000)
-        "performNext 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+            delay(4500)
+            coroutineScope.launch {
+                flow {
+                    for (i in 1..16) {
+                        emit(i)
+                        delay(450)
+                    }
+                }.collect {
+                    click(Coordinate.heartstone_battle)
+                    "performNext 点击对战 ,第${it}次".d(TAG)
+                }
+            }
 
-        //升星或降星需要再点击一次
-        delay(1000)
-        "performNext 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+            nodeInfo.recycle()
+        }
 
-        delay(5000)
-        "performNext 点击对战".d(TAG)
-        click(Coordinate.heartstone_battle)
-
-        nodeInfo.recycle()
 
     }
 
-    private suspend fun performSurrender(nodeInfo: AccessibilityNodeInfo) {
-        "performSurrender 点击设置".d(TAG)
-        click(Coordinate.heartstone_setting)
+    private fun performSurrender(coroutineScope: CoroutineScope, nodeInfo: AccessibilityNodeInfo) {
+        coroutineScope.launch {
+            "performSurrender 点击设置".d(TAG)
+            click(Coordinate.heartstone_setting)
 
-        delay(500)
-        "performSurrender 点击认输".d(TAG)
-        click(Coordinate.heartstone_surrender)
+            delay(150)
+            "performSurrender 点击认输".d(TAG)
+            click(Coordinate.heartstone_surrender)
 
-        delay(8000)
-        "performSurrender 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+            //认输动画结束
+            delay(5500)
 
-        delay(1000)
-        "performSurrender 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+            //delay5.7s的同时，每457ms，点击空白区域
+            coroutineScope.launch(Dispatchers.Default) {
+                flow {
+                    for (i in 1..10) {
+                        emit(i)
+                        delay(457)
+                    }
+                }.collect {
+                    click(Coordinate.heartstone_blank)
+                    "performSurrender 点击空白区域 ,第${it}次".d(TAG)
+                }
+            }
 
-        //升星或降星需要再点击一次
-        delay(1000)
-        "performSurrender 点击空白区域".d(TAG)
-        click(Coordinate.heartstone_blank)
+            delay(5377)
+            flow {
+                for (i in 1..4) {
+                    emit(i)
+                    delay(437)
+                }
+            }.collect {
+                click(Coordinate.heartstone_battle)
+                "performSurrender 点击对战 ,第${it}次".d(TAG)
+            }
 
-        delay(5000)
-        "performSurrender 点击对战".d(TAG)
-        click(Coordinate.heartstone_battle)
 
-        nodeInfo.recycle()
+            nodeInfo.recycle()
+        }
     }
 
 

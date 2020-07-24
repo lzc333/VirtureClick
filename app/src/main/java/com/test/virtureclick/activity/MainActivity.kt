@@ -25,6 +25,7 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private val TAG = "MainActivity"
+    private var exitTime : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,5 +135,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
         "onDestroy".d(TAG)
         cancel()
+    }
+
+    override fun onBackPressed() {
+        "onBackPressed".d(TAG)
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            "再按一次退出程序".showToast(this@MainActivity)
+            exitTime = System.currentTimeMillis();
+        }else {
+            super.onBackPressed()
+        }
     }
 }
