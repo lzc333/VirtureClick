@@ -25,16 +25,17 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private val TAG = "MainActivity"
-    private var exitTime : Long = 0
+    private var exitTime: Long = 0
+    private var isBind = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         "onCreate".d(TAG)
         start_accessibility_bt.setOnClickListener {
-            if(isAccessibilitySettingsOn(this@MainActivity, MyAccessibilityService::class.java)){
+            if (isAccessibilitySettingsOn(this@MainActivity, MyAccessibilityService::class.java)) {
                 "已开启无障碍权限！".showToast(this@MainActivity)
-            }else{
+            } else {
                 startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             }
         }
@@ -42,7 +43,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             startService()
         }
         close_window_bt.setOnClickListener {
-            unbindService(mServiceConnection)
+            if (isBind) {
+                unbindService(mServiceConnection)
+                isBind = false
+            }
         }
     }
 
@@ -50,12 +54,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private fun startService() {
         if (!Settings.canDrawOverlays(this)) {
             "当前无权限，请授权！".showToast(this@MainActivity)
-            startActivityForResult(
-                Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
-                ), 0
-            )
+            startActivityForResult(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")), 0)
         } else {
             val intent = Intent(this@MainActivity, FloatWindowServices::class.java)
             bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE)
@@ -69,10 +68,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             // 获取服务的操作对象
             val binder = service as FloatWindowServices.MyBinder
             binder.service
+            isBind = true
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             "onServiceDisconnected".d(TAG)
+            isBind = false
             exitProcess(0)
         }
     }
@@ -95,13 +96,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
 
-   private fun isAccessibilitySettingsOn(mContext: Context, clazz: Class<out AccessibilityService?>): Boolean {
+    private fun isAccessibilitySettingsOn(mContext: Context, clazz: Class<out AccessibilityService?>): Boolean {
         var accessibilityEnabled = 0
         val service = mContext.packageName + "/" + clazz.canonicalName
         try {
             accessibilityEnabled = Settings.Secure.getInt(
-                mContext.applicationContext.contentResolver,
-                Settings.Secure.ACCESSIBILITY_ENABLED
+                    mContext.applicationContext.contentResolver,
+                    Settings.Secure.ACCESSIBILITY_ENABLED
             )
         } catch (e: SettingNotFoundException) {
             e.printStackTrace()
@@ -109,8 +110,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val mStringColonSplitter = SimpleStringSplitter(':')
         if (accessibilityEnabled == 1) {
             val settingValue = Settings.Secure.getString(
-                mContext.applicationContext.contentResolver,
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+                    mContext.applicationContext.contentResolver,
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
             )
             if (settingValue != null) {
                 mStringColonSplitter.setString(settingValue)
@@ -125,11 +126,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         return false
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        "onRestart".d(TAG)
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -142,7 +138,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
             "再按一次退出程序".showToast(this@MainActivity)
             exitTime = System.currentTimeMillis();
-        }else {
+        } else {
             super.onBackPressed()
         }
     }
