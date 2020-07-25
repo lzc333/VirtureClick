@@ -34,16 +34,17 @@ class MyAccessibilityService : AccessibilityService() {
 
 
     //接收到系统发送AccessibilityEvent时的回调
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // "onAccessibilityEvent:event:$event".d(TAG)
-        analyzeEvent(event, rootInActiveWindow)
-        event.recycle()
+        analyzeEvent(event)
+        rootInActiveWindow?.recycle()
+        event?.recycle()
     }
 
-    private fun analyzeEvent(event: AccessibilityEvent, nodeInfo: AccessibilityNodeInfo) {
-        when (event.eventType) {
+    private fun analyzeEvent(event: AccessibilityEvent?) {
+        when (event?.eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                val id = event?.source?.viewIdResourceName?.split("/")?.get(1)
+                val id = event.source?.viewIdResourceName?.split("/")?.get(1)
                 "analyzeEvent , id:$id".d(TAG)
                 when (id) {
                     "floatwindow_surrender_tv" -> {
@@ -52,7 +53,7 @@ class MyAccessibilityService : AccessibilityService() {
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.Default) {
-                                performSurrender(this, nodeInfo)
+                                performSurrender()
                             }
                         )
                     }
@@ -67,7 +68,7 @@ class MyAccessibilityService : AccessibilityService() {
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
                             GlobalScope.launch(Dispatchers.Default) {
-                                performNext(this, nodeInfo)
+                                performNext()
                             }
                         )
                     }
@@ -76,80 +77,40 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
-    private fun performNext(coroutineScope: CoroutineScope, nodeInfo: AccessibilityNodeInfo) {
-        coroutineScope.launch {
-            "performNext  start".d(TAG)
-            coroutineScope.launch {
-                flow {
-                    for (i in 1..21) {
-                        emit(i)
-                        delay(433)
-                    }
-                }.collect {
-                    click(Coordinate.heartstone_blank)
-                    "performNext 点击空白区域 ,第${it}次".d(TAG)
-                }
+    private suspend fun performNext() {
+        "performNext  start".d(TAG)
+        flow {
+            for (i in 1..33) {
+                emit(i)
+                delay(350)
             }
-
-
-            delay(4500)
-            coroutineScope.launch {
-                flow {
-                    for (i in 1..16) {
-                        emit(i)
-                        delay(450)
-                    }
-                }.collect {
-                    click(Coordinate.heartstone_battle)
-                    "performNext 点击对战 ,第${it}次".d(TAG)
-                }
-            }
-
-            nodeInfo.recycle()
+        }.collect {
+            click(Coordinate.heartstone_battle)
+            "performNext 点击对战 ,第${it}次".d(TAG)
         }
-
-
     }
 
-    private fun performSurrender(coroutineScope: CoroutineScope, nodeInfo: AccessibilityNodeInfo) {
-        coroutineScope.launch {
-            "performSurrender 点击设置".d(TAG)
-            click(Coordinate.heartstone_setting)
+    private suspend fun performSurrender() {
+        "performSurrender 点击设置".d(TAG)
+        click(Coordinate.heartstone_setting)
 
-            delay(150)
-            "performSurrender 点击认输".d(TAG)
-            click(Coordinate.heartstone_surrender)
+        delay(200)
+        "performSurrender 点击认输".d(TAG)
+        click(Coordinate.heartstone_surrender)
 
-            //认输动画结束
-            delay(5500)
+        //认输动画结束
+        delay(5000)
 
-            //delay5.7s的同时，每457ms，点击空白区域
-            coroutineScope.launch(Dispatchers.Default) {
-                flow {
-                    for (i in 1..10) {
-                        emit(i)
-                        delay(457)
-                    }
-                }.collect {
-                    click(Coordinate.heartstone_blank)
-                    "performSurrender 点击空白区域 ,第${it}次".d(TAG)
-                }
+        flow {
+            for (i in 1..20) {
+                emit(i)
+                delay(350)
             }
-
-            delay(5377)
-            flow {
-                for (i in 1..4) {
-                    emit(i)
-                    delay(437)
-                }
-            }.collect {
-                click(Coordinate.heartstone_battle)
-                "performSurrender 点击对战 ,第${it}次".d(TAG)
-            }
-
-
-            nodeInfo.recycle()
+        }.collect {
+            click(Coordinate.heartstone_battle)
+            "performSurrender 点击对战 ,第${it}次".d(TAG)
         }
+
     }
 
 

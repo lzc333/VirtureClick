@@ -135,8 +135,8 @@ class FloatWindowServices : Service() {
         wmParams?.run {
             gravity = Gravity.START or Gravity.TOP
             //悬浮窗的开始位置，因为设置的是从左上角开始，所以屏幕左上角是x=0;y=0
-            x = winManager!!.defaultDisplay.width
-            y = 210
+            x = 0
+            y = 230
 
         }
         //得到容器，通过这个inflater来获得悬浮窗控件
