@@ -22,6 +22,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "app"
+    productFlavors {
+        xiaomi9 {
+            dimension "app"
+        }
+        xiaomi5 {
+            dimension "app"
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+        }
+        xiaomi5 {
+            java.srcDirs = ['src/xiaomi5/java']
+        }
+        xiaomi9 {
+            java.srcDirs = ['src/xiaomi9/java']
+        }
+    }
 }
 
 dependencies {

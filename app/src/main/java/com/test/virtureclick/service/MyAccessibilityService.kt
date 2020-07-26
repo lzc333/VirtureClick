@@ -6,13 +6,10 @@ import android.app.Service
 import android.graphics.Path
 import android.os.Vibrator
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-import com.test.virtureclick.R
 import com.test.virtureclick.bean.Coordinate
 import com.test.virtureclick.bean.HangUpEvent
 import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.d
-import com.test.virtureclick.tools.trimBrackets
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow

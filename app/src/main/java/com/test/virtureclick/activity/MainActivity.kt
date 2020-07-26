@@ -14,8 +14,11 @@ import android.text.TextUtils.SimpleStringSplitter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.test.virtureclick.R
+import com.test.virtureclick.bean.Coordinate
 import com.test.virtureclick.service.FloatWindowServices
 import com.test.virtureclick.service.MyAccessibilityService
+import com.test.virtureclick.tools.FlavorUtils
+import com.test.virtureclick.tools.clickWithTrigger
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.showToast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -48,6 +51,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 isBind = false
             }
         }
+
+        flavor_version_tv.text = "version: ${FlavorUtils.flavor}"
     }
 
 

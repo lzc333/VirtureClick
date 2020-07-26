@@ -1,7 +1,6 @@
 package com.test.virtureclick.bean
 
 enum class Coordinate(val x: Int, val y: Int) {
-    heartstone_blank(2080, 177),
     heartstone_setting(2163, 30),
     heartstone_surrender(1239, 240),
     heartstone_battle(1756, 800),
