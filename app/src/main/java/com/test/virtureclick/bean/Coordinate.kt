@@ -4,5 +4,7 @@ enum class Coordinate(val x: Int, val y: Int) {
     heartstone_blank(2080, 177),
     heartstone_setting(2163, 30),
     heartstone_surrender(1239, 240),
-    heartstone_battle(1750, 934)
+    heartstone_battle(1756, 800),
+    heartstone_end_round(1980,530),
+    heartstone_sure_round(1200,910)
 }

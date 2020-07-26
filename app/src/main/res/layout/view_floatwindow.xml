@@ -7,7 +7,18 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/floatwindow_surrender_tv"
+        android:id="@+id/floatwindow_hangup_bt"
+        android:text="@string/heartstone_hangup"
+        android:layout_width="wrap_content"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/floatwindow_surrender_bt"
         android:text="@string/heartstone_surrender"
         android:layout_width="wrap_content"
         android:textAllCaps="false"
@@ -17,7 +28,7 @@
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
     <Button
-        android:id="@+id/floatwindow_cancel_tv"
+        android:id="@+id/floatwindow_cancel_bt"
         android:text="@string/heartstone_cancel"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
@@ -26,7 +37,7 @@
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content" />
     <Button
-        android:id="@+id/floatwindow_next_tv"
+        android:id="@+id/floatwindow_next_bt"
         android:text="@string/heartstone_next"
         android:background="@android:color/transparent"
         android:layout_width="wrap_content"

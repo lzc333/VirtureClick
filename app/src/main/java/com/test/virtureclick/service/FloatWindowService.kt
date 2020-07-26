@@ -18,6 +18,7 @@ import android.widget.Chronometer
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.test.virtureclick.R
+import com.test.virtureclick.bean.HangUpEvent
 import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.clickWithTrigger
 import com.test.virtureclick.tools.d
@@ -40,6 +41,7 @@ class FloatWindowServices : Service() {
     //浮动布局
     private lateinit var mFloatingLayout: View
     private lateinit var mNextBt: Button
+    private lateinit var mHungUpBt: Button
     private lateinit var chronometer: Chronometer
 
 
@@ -70,15 +72,20 @@ class FloatWindowServices : Service() {
      */
     private fun initFloating() {
         mFloatingLayout.findViewById<LinearLayout>(R.id.floatwindow_layout)
-                .setOnTouchListener(FloatingListener())
+            .setOnTouchListener(FloatingListener())
 
-        mFloatingLayout.findViewById<Button>(R.id.floatwindow_surrender_tv).clickWithTrigger(500) {
+        mHungUpBt = mFloatingLayout.findViewById<Button>(R.id.floatwindow_hangup_bt)
+        mHungUpBt.clickWithTrigger(500) {
+            "挂机".showToast(this)
+        }
+
+        mFloatingLayout.findViewById<Button>(R.id.floatwindow_surrender_bt).clickWithTrigger(500) {
             "认输".showToast(this)
         }
-        mFloatingLayout.findViewById<Button>(R.id.floatwindow_cancel_tv).clickWithTrigger(500) {
+        mFloatingLayout.findViewById<Button>(R.id.floatwindow_cancel_bt).clickWithTrigger(500) {
             "取消".showToast(this)
         }
-        mNextBt = mFloatingLayout.findViewById<Button>(R.id.floatwindow_next_tv)
+        mNextBt = mFloatingLayout.findViewById<Button>(R.id.floatwindow_next_bt)
         mNextBt.clickWithTrigger(500) {
             "下一局".showToast(this)
         }
@@ -99,7 +106,8 @@ class FloatWindowServices : Service() {
             y = 230
         }
         // 获取浮动窗口视图所在布局
-        mFloatingLayout = LayoutInflater.from(applicationContext).inflate(R.layout.view_floatwindow, null)
+        mFloatingLayout =
+            LayoutInflater.from(applicationContext).inflate(R.layout.view_floatwindow, null)
         chronometer = mFloatingLayout.findViewById<Chronometer>(R.id.floatwindow_chronometer)
         chronometer.start()
         // 添加悬浮窗的视图
@@ -117,6 +125,13 @@ class FloatWindowServices : Service() {
         mNextBt.setTextColor(ContextCompat.getColor(this@FloatWindowServices, color))
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun handleEvent(event: HangUpEvent) {
+        "handleEvent event = $event".d(TAG)
+        mHungUpBt.setTextColor(ContextCompat.getColor(this@FloatWindowServices,
+            if(event.isHangUp){android.R.color.holo_green_light}else{android.R.color.holo_red_light}))
+    }
 
     //开始触控的坐标，移动时的坐标（相对于屏幕左上角的坐标）
     private var mTouchStartX: Int = 0
@@ -183,9 +198,9 @@ class FloatWindowServices : Service() {
             wmParams.run {
                 type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
                 flags =
-                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR or
-                                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR or
+                            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 width = WindowManager.LayoutParams.WRAP_CONTENT
                 height = WindowManager.LayoutParams.WRAP_CONTENT
                 format = PixelFormat.TRANSPARENT
@@ -197,19 +212,20 @@ class FloatWindowServices : Service() {
     //自动靠x轴边
     private fun autoTheSide() {
         val startValue = wmParams.x
-        val endValue = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (wmParams.x <= (screenWidth - mFloatingLayout.width) / 2) {
-                0
+        val endValue =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (wmParams.x <= (screenWidth - mFloatingLayout.width) / 2) {
+                    0
+                } else {
+                    screenWidth - mFloatingLayout.width
+                }
             } else {
-                screenWidth - mFloatingLayout.width
+                if (wmParams.x <= screenHeight / 2) {
+                    0
+                } else {
+                    screenHeight
+                }
             }
-        } else {
-            if (wmParams.x <= screenHeight / 2) {
-                0
-            } else {
-                screenHeight
-            }
-        }
         mAnimator = ValueAnimator.ofInt(startValue, endValue)
         mAnimator?.let {
             it.addUpdateListener { animation ->

@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.test.virtureclick.R
 import com.test.virtureclick.bean.Coordinate
+import com.test.virtureclick.bean.HangUpEvent
 import com.test.virtureclick.bean.NextNumberEvent
 import com.test.virtureclick.tools.d
 import com.test.virtureclick.tools.trimBrackets
@@ -24,6 +25,7 @@ class MyAccessibilityService : AccessibilityService() {
     private lateinit var vibrator: Vibrator
     private val mListJob: ArrayList<Job> = arrayListOf()
     private var nextNumber = 0
+    private var isHangUp = false
 
     //服务中断时的回调
     override fun onInterrupt() {
@@ -47,8 +49,21 @@ class MyAccessibilityService : AccessibilityService() {
                 val id = event.source?.viewIdResourceName?.split("/")?.get(1)
                 "analyzeEvent , id:$id".d(TAG)
                 when (id) {
-                    "floatwindow_surrender_tv" -> {
+                    "floatwindow_hangup_bt"-> {
                         cancel()
+                        isHangUp = !isHangUp
+                        EventBus.getDefault().post(HangUpEvent(isHangUp))
+                        mListJob.add(
+                            GlobalScope.launch(Dispatchers.Default) {
+                                performHangUp(this)
+                            }
+                        )
+                    }
+
+                    "floatwindow_surrender_bt" -> {
+                        cancel()
+                        isHangUp = false
+                        EventBus.getDefault().post(HangUpEvent(isHangUp))
                         nextNumber = 0
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
@@ -58,12 +73,16 @@ class MyAccessibilityService : AccessibilityService() {
                         )
                     }
 
-                    "floatwindow_cancel_tv" -> {
+                    "floatwindow_cancel_bt" -> {
                         cancel()
+                        isHangUp = false
+                        EventBus.getDefault().post(HangUpEvent(isHangUp))
                     }
 
-                    "floatwindow_next_tv" -> {
+                    "floatwindow_next_bt" -> {
                         cancel()
+                        isHangUp = false
+                        EventBus.getDefault().post(HangUpEvent(isHangUp))
                         nextNumber++
                         EventBus.getDefault().post(NextNumberEvent(nextNumber))
                         mListJob.add(
@@ -88,6 +107,41 @@ class MyAccessibilityService : AccessibilityService() {
             click(Coordinate.heartstone_battle)
             "performNext 点击对战 ,第${it}次".d(TAG)
         }
+    }
+
+    private suspend fun performHangUp(coroutineScope: CoroutineScope) {
+        "performHangUp  start".d(TAG)
+        click(Coordinate.heartstone_battle)
+        delay(200)
+
+        coroutineScope.launch(Dispatchers.Default) {
+            var number_battle = 0
+            while (isHangUp){
+                click(Coordinate.heartstone_battle)
+                "performHangUp 点击对战 ,第${++number_battle}次".d(TAG)
+                delay(3500)
+            }
+        }
+
+        coroutineScope.launch(Dispatchers.Default) {
+            var number_end_round = 0
+            while (isHangUp){
+                click(Coordinate.heartstone_end_round)
+                "performHangUp 点击结束回合 ,第${++number_end_round}次".d(TAG)
+                delay(7330)
+            }
+        }
+
+        coroutineScope.launch(Dispatchers.Default) {
+            var number_sure_round = 0
+            while (isHangUp){
+                click(Coordinate.heartstone_sure_round)
+                "performHangUp 点击确认 ,第${++number_sure_round}次".d(TAG)
+                delay(11760)
+            }
+        }
+
+
     }
 
     private suspend fun performSurrender() {

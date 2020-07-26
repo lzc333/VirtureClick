@@ -4,4 +4,5 @@
     <string name="heartstone_surrender">surrender</string>
     <string name="heartstone_cancel">cancel</string>
     <string name="heartstone_next">next</string>
+    <string name="heartstone_hangup">hang up</string>
 </resources>
