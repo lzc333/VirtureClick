@@ -9,5 +9,5 @@ enum class ClickInterval(val timeMillis: Long) {
     heartstone_hangup_battle(3500),
     heartstone_hangup_end_round(7330),
     heartstone_hangup_sure_round(11760),
-    heartstone_skill(30000)
+    heartstone_skill(7330)
 }

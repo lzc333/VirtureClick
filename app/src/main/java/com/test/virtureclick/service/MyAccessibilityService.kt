@@ -153,7 +153,7 @@ class MyAccessibilityService : AccessibilityService() {
             var number_battle = 0
             while (isHangUp){
                 click(Coordinate.heartstone_battle)
-                "performHangUp 点击对战 ,第${++number_battle}次".d(TAG)
+               // "performHangUp 点击对战 ,第${++number_battle}次".d(TAG)
                 delay(ClickInterval.heartstone_hangup_battle.timeMillis)
             }
         }
@@ -172,7 +172,7 @@ class MyAccessibilityService : AccessibilityService() {
             var number_skill = 0
             while (isHangUp){
                 click(Coordinate.heartstone_skill)
-                "performHangUp 点击技能 ,第${++number_skill}次".d(TAG)
+             //   "performHangUp 点击技能 ,第${++number_skill}次".d(TAG)
                 delay(ClickInterval.heartstone_skill.timeMillis)
             }
         }
@@ -181,7 +181,7 @@ class MyAccessibilityService : AccessibilityService() {
             var number_sure_round = 0
             while (isHangUp){
                 click(Coordinate.heartstone_sure_round)
-                "performHangUp 点击确认 ,第${++number_sure_round}次".d(TAG)
+             //   "performHangUp 点击确认 ,第${++number_sure_round}次".d(TAG)
                 delay(ClickInterval.heartstone_hangup_sure_round.timeMillis)
             }
         }
