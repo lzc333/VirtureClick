@@ -158,12 +158,22 @@ class MyAccessibilityService : AccessibilityService() {
             }
         }
 
-        coroutineScope.launch(Dispatchers.Default) {
+
+        /*coroutineScope.launch(Dispatchers.Default) {
             var number_end_round = 0
             while (isHangUp){
                 click(Coordinate.heartstone_end_round)
                 "performHangUp 点击结束回合 ,第${++number_end_round}次".d(TAG)
                 delay(ClickInterval.heartstone_hangup_end_round.timeMillis)
+            }
+        }*/
+        //战令更新后，增加烧绳时间，不再结束回合
+        coroutineScope.launch(Dispatchers.Default) {
+            var number_skill = 0
+            while (isHangUp){
+                click(Coordinate.heartstone_skill)
+                "performHangUp 点击技能 ,第${++number_skill}次".d(TAG)
+                delay(ClickInterval.heartstone_skill.timeMillis)
             }
         }
 
