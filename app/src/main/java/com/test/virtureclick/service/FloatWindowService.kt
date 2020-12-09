@@ -119,7 +119,7 @@ class FloatWindowServices : Service() {
         "handleEvent event = $event".d(TAG)
         val color = when (event.number) {
             0 -> android.R.color.white
-            1 -> android.R.color.holo_green_light
+            1 -> android.R.color.holo_green_dark
             else -> android.R.color.holo_red_light
         }
         mNextBt.setTextColor(ContextCompat.getColor(this@FloatWindowServices, color))
@@ -130,7 +130,7 @@ class FloatWindowServices : Service() {
     fun handleEvent(event: HangUpEvent) {
         "handleEvent event = $event".d(TAG)
         mHungUpBt.setTextColor(ContextCompat.getColor(this@FloatWindowServices,
-            if(event.isHangUp){android.R.color.holo_green_light}else{android.R.color.holo_red_light}))
+            if(event.isHangUp){android.R.color.holo_green_dark}else{android.R.color.holo_red_light}))
     }
 
     //开始触控的坐标，移动时的坐标（相对于屏幕左上角的坐标）
