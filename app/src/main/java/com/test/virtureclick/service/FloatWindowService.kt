@@ -177,7 +177,7 @@ class FloatWindowServices : Service() {
                     if (abs(mStartX - mStopX) >= 1 || abs(mStartY - mStopY) >= 1) {
                         isMove = true
                     }
-                    autoTheSide()
+                    autoYSide()
                 }
                 else -> {
                 }
@@ -208,9 +208,8 @@ class FloatWindowServices : Service() {
             return wmParams
         }
 
-
     //自动靠x轴边
-    private fun autoTheSide() {
+    private fun autoXSide() {
         val startValue = wmParams.x
         val endValue =
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -230,6 +229,36 @@ class FloatWindowServices : Service() {
         mAnimator?.let {
             it.addUpdateListener { animation ->
                 wmParams.x = animation.animatedValue as Int
+                winManager.updateViewLayout(mFloatingLayout, wmParams)
+            }
+            it.duration = 300L
+            it.interpolator = DecelerateInterpolator()
+            it.start()
+        }
+    }
+
+
+    //自动靠y轴边
+    private fun autoYSide() {
+        val startValue = wmParams.y
+        val endValue =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (wmParams.y <= (screenHeight - mFloatingLayout.height) / 2) {
+                    0
+                } else {
+                    screenHeight
+                }
+            } else {
+                if (wmParams.y <= screenWidth / 2) {
+                    0
+                } else {
+                    screenWidth
+                }
+            }
+        mAnimator = ValueAnimator.ofInt(startValue, endValue)
+        mAnimator?.let {
+            it.addUpdateListener { animation ->
+                wmParams.y = animation.animatedValue as Int
                 winManager.updateViewLayout(mFloatingLayout, wmParams)
             }
             it.duration = 300L
